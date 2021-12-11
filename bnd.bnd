@@ -1,0 +1,4 @@
+Bundle-Name: user-registration-web
+Bundle-SymbolicName: site.hadef.user.registration.web
+Bundle-Version: 1.0.0
+Export-Package: site.hadef.user.registration.web.constants
