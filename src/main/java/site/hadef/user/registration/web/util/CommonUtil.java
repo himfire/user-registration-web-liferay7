@@ -22,7 +22,7 @@ public class CommonUtil {
 		if(Validator.isNotNull(validator)) {
 			return validator;
 		}
-		return new RegisterValidator(false, false, false, false, false, false);
+		return new RegisterValidator(false, false, false, false, false, false,false);
 	}
 	
 	public static List<Registration> getRegisteredUserByEmailOrName(String searchText){

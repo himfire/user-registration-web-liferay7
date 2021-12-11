@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.Date;
+import java.util.regex.Pattern;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -28,7 +29,8 @@ import site.user.registration.service.RegistrationLocalServiceUtil;
 "mvc.command.name=editUser" }, service = MVCActionCommand.class)
 public class EditUserRegistrationMVCActionCommand implements MVCActionCommand{
 	private static Log _log = LogFactoryUtil.getLog(UserRegistrationMVCActionCommand.class);
-
+	private final String emailRegex = "^(.+)@(.+).(.+)$";
+    private final Pattern pattern = Pattern.compile(emailRegex);
 	@Override
 	public boolean processAction(ActionRequest actionRequest, ActionResponse actionResponse) throws PortletException {
 ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
@@ -46,7 +48,7 @@ ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.TH
 			registration = RegistrationLocalServiceUtil.getRegistration(registrationId);
 			
 			boolean isError = false;
-			RegisterValidator validator = new RegisterValidator(false,false,false,false,false,false);
+			RegisterValidator validator = new RegisterValidator(false,false,false,false,false,false,false);
 
 			if (name.isEmpty() || Validator.isNull(name)) {
 				validator.setName(true);
@@ -56,7 +58,10 @@ ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.TH
 				validator.setEmail(true);
 				isError = true;
 			}
-			
+			if (validateEmail(email)) {
+				validator.setEmailValidate(true);
+				isError = true;
+			}
 			if (phone.isEmpty() || Validator.isNull(phone)) {
 				validator.setPhone(true);
 				isError = true;
@@ -92,6 +97,12 @@ ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.TH
 		
 		
 
+		return false;
+	}
+	private boolean validateEmail(String email) {
+		if(!pattern.matcher(email).matches()){
+			return true;
+		}
 		return false;
 	}
 }

@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.Date;
+import java.util.regex.Pattern;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -29,7 +30,10 @@ import site.user.registration.service.RegistrationLocalServiceUtil;
 "mvc.command.name=addUser" }, service = MVCActionCommand.class)
 public class UserRegistrationMVCActionCommand implements MVCActionCommand{
 	private static Log _log = LogFactoryUtil.getLog(UserRegistrationMVCActionCommand.class);
-	@Override
+
+	private final String emailRegex = "^(.+)@(.+).(.+)$";
+    private final Pattern pattern = Pattern.compile(emailRegex);
+    
 	public boolean processAction(ActionRequest actionRequest, ActionResponse actionResponse) throws PortletException {
 		
 		ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
@@ -44,7 +48,7 @@ public class UserRegistrationMVCActionCommand implements MVCActionCommand{
 		Registration registration = RegistrationLocalServiceUtil.createRegistration(CounterLocalServiceUtil.increment(Registration.class.getName()));
 		
 		boolean isError = false;
-		RegisterValidator validator = new RegisterValidator(false,false,false,false,false,false);
+		RegisterValidator validator = new RegisterValidator(false,false,false,false,false,false,false);
 
 		if (name.isEmpty() || Validator.isNull(name)) {
 			validator.setName(true);
@@ -54,7 +58,10 @@ public class UserRegistrationMVCActionCommand implements MVCActionCommand{
 			validator.setEmail(true);
 			isError = true;
 		}
-		
+		if (validateEmail(email)) {
+			validator.setEmailValidate(true);
+			isError = true;
+		}
 		if (phone.isEmpty() || Validator.isNull(phone)) {
 			validator.setPhone(true);
 			isError = true;
@@ -90,6 +97,12 @@ public class UserRegistrationMVCActionCommand implements MVCActionCommand{
 //		}  catch (java.io.IOException e) {
 //			_log.error("URL Not found: " + e.getMessage());
 //		}
+		return false;
+	}
+	private boolean validateEmail(String email) {
+		if(!pattern.matcher(email).matches()){
+			return true;
+		}
 		return false;
 	}
 

@@ -99,7 +99,7 @@
 										</div>
 										<div class="form-group-autofit">
 											<div
-												class="form-group-item <%=(errorMessages.isEmail()) ? "has-warning" : ""%>"">
+												class="form-group-item <%=(errorMessages.isEmail() || errorMessages.isEmailValidate()) ? "has-warning" : ""%>"">
 												<label for="email"><liferay-ui:message key="email" />
 													<span class="reference-mark"><i
 														class="icon-asterisk"></i></span> </label> <input class="form-control"
@@ -110,6 +110,15 @@
 												%>
 												<div class="form-feedback-item">
 													<liferay-ui:message key="fieldRequired" />
+												</div>
+												<%
+													}
+												%>
+												<%
+													if (errorMessages.isEmailValidate()) {
+												%>
+												<div class="form-feedback-item">
+													<liferay-ui:message key="validateEmail" />
 												</div>
 												<%
 													}
